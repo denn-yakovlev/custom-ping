@@ -12,7 +12,7 @@
 
 using namespace std;
 
-int hostname_to_ip_address(const char *hostname, in_addr *ipv4_addr)
+int hostname_to_ip_address(char *hostname, in_addr *ipv4_addr)
 {
     const ADDRINFO hints =
     {
@@ -28,7 +28,7 @@ int hostname_to_ip_address(const char *hostname, in_addr *ipv4_addr)
     return GetLastError();
 }
 
-int ping(const char *hostname, int timeout, ICMP_ECHO_REPLY *reply)
+int ping(char *hostname, int timeout, ICMP_ECHO_REPLY *reply)
 { 
     in_addr* addr = new in_addr();
     hostname_to_ip_address(hostname, addr);
@@ -46,7 +46,10 @@ int main()
     WSADATA wsa_startup_result;
     WSAStartup(MAKEWORD(1, 1), &wsa_startup_result);
 
-    const char* hostname = "google.com";
+    char* hostname;
+    std::cout >> "input hostname: ";
+    std::cin << hostname;
+
     char str_addr[100];
     in_addr *addr = new in_addr();
 
