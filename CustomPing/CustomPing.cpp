@@ -4,6 +4,7 @@
 #include <iphlpapi.h>
 #include <IcmpAPI.h>
 #include <iostream>
+#include <time.h>
 
 #pragma comment (lib, "IPHLPAPI.lib")
 #pragma comment (lib, "Ws2_32.lib")
@@ -21,6 +22,7 @@ int hostname_to_ip_address(const char *hostname, in_addr *ipv4_addr)
         PF_INET,
         SOCK_STREAM
     };
+
     ADDRINFO* addr_info_result = new ADDRINFO();
     getaddrinfo(hostname, "http", &hints, &addr_info_result);
 
@@ -34,12 +36,18 @@ int main()
     char str_addr[100];
     in_addr *addr = new in_addr();
 
-    int err = hostname_to_ip_address(hostname, addr);
-    if (err)
-        return err;
 
     inet_ntop(AF_INET, addr, str_addr, 100);
-    std::cout << "IP of " << hostname << ": " << str_addr << std::endl;
+    while(true) {
+      clock_t start = clock();
+      int err = hostname_to_ip_address(hostname, addr);
+      if (err)
+        return err;
+      clock_t end = clock();
+      double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+      std::cout << "IP of " << hostname << ": " << str_addr << "times: " << seconds << " s" std::endl;
+      sleep(1000);
+    }
     WSACleanup();
     return 0;
 }
